@@ -41,7 +41,7 @@ module Shinka
       end
 
       def register_bar(multi_bar)
-        @bar = multi_bar.register("Updating #{name}… [:bar] :percent", total: 14)
+        @bar = multi_bar.register("Updating #{name}… [:bar] :elapsed :percent", total: 14)
         @bar.current = 0
       end
 

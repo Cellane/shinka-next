@@ -45,7 +45,7 @@ module Shinka
 
       def initialize_progress_bars
         steps = @apps.count
-        @multi_bar = TTY::ProgressBar::Multi.new('Finding updates… [:bar] :elapsed :percent', head: '>')
+        @multi_bar = TTY::ProgressBar::Multi.new('Finding updates… [:bar] :elapsed (ETA :eta) :percent', head: '>')
         @bars = {
           detect_deployed_bar: @multi_bar.register('Detecting currently deployed versions… [:bar] :elapsed :percent', total: steps),
           find_latest_bar: @multi_bar.register('Finding latest versions…               [:bar] :elapsed :percent', total: steps)
@@ -82,7 +82,7 @@ module Shinka
       end
 
       def deploy_updates
-        multi_bar = TTY::ProgressBar::Multi.new('Deploying updates… [:bar] :elapsed :percent', head: '>')
+        multi_bar = TTY::ProgressBar::Multi.new('Deploying updates… [:bar] :elapsed (ETA :eta) :percent', head: '>')
         @apps_to_update.each { |app| app.register_bar(multi_bar) }
         @apps_to_update.each(&:update)
       end

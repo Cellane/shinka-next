@@ -24,6 +24,19 @@
       :repository: ghost
       :filter: !ruby/regexp /^3[\.\d+]+-alpine$/
       :hub_filter: 3
+  :cadvisor:
+    :image:
+      :type: :gcr
+      :repository: google-containers/cadvisor
+      :filter: !ruby/regexp /^v0[\.\d+]+$/
+      :username: _json_key
+      :password: |-
+        {
+          "you": "should",
+          "probably": "put",
+          "your": "own",
+          "credentials": "here"
+        }
   :drone:
     :image:
       :type: :docker_hub
