@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pastel'
 require 'tty-option'
 require 'tty-progressbar'
 require 'tty-prompt'
@@ -21,6 +22,7 @@ module Shinka
       def initialize(options)
         parse
         @options = options
+        @pastel = Pastel.new
         @prompt = TTY::Prompt.new
       end
 
@@ -61,7 +63,7 @@ module Shinka
         header = ['App name', 'Deployed version', 'Latest version']
         rows = @apps.map do |app|
           [app.name, app.deployed_version, app.latest_version].map do |column|
-            app.deployed_version == app.latest_version ? column : "\e[1m#{column}\e[22m"
+            app.deployed_version == app.latest_version ? column : @pastel.magenta.bold(column)
           end
         end
 

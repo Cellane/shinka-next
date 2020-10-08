@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in shinka.gemspec
 gemspec
 
+gem 'pastel'
 gem 'thor'
 gem 'tty'
 gem 'tty-option', '~> 0.1'
