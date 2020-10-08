@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="73816d84-3df1-4db7-8086-77bb3081b302" name="Czech/in/Japan" url="https://www.milanvit.net">
+        <fileTransfer rootFolder="/home/milan/shinka-new" accessType="SFTP" host="cij" port="22" sshConfigId="4db24f04-5aa8-40d5-9d97-c2b21b993cc5" sshConfig="milan@cij:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="Czech/in/Japan" exclude=".svn;.cvs;.idea;.DS_Store;.hg;*.hprof;*.pyc" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Czech/in/Japan">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
