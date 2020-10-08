@@ -3,6 +3,7 @@
 module Shinka
   module Models
     class DockerImage
+      attr_reader :repository
       attr_reader :filter
 
       def initialize(**args)

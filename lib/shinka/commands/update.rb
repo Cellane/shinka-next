@@ -71,14 +71,18 @@ module Shinka
 
       def select_updates
         updateable = @apps.select(&:updates_available).map { |app| { app.name => app } }
-        @apps_to_update = @prompt.multi_select('Which updates you wish to apply?', cycle: true, filter: true, min: 1) do |prompt|
-          prompt.default *((1..updateable.count).to_a)
+        options = { cycle: true, filter: true, min: 1 }
+        @apps_to_update = @prompt.multi_select('Which apps do you wish to update?', options) do |prompt|
+          all_indexes = (1..updateable.count).to_a
+          prompt.default *(all_indexes)
           updateable.each { |name, app| prompt.choice name, app }
         end
       end
 
       def deploy_updates
-        p @apps_to_update
+        multi_bar = TTY::ProgressBar::Multi.new('Deploying updates… [:bar] :elapsed :percent', head: '>')
+        @apps_to_update.each { |app| app.register_bar(multi_bar) }
+        @apps_to_update.each(&:update)
       end
 
       def detect_deployed_versions
