@@ -34,6 +34,7 @@ module Shinka
         print_results
         select_updates
         deploy_updates
+        offer_cleanup
       end
 
       private
@@ -73,7 +74,7 @@ module Shinka
 
       def select_updates
         updateable = @apps.select(&:updates_available).map { |app| { app.name => app } }
-        options = { cycle: true, filter: true, min: 1 }
+        options = { cycle: true, filter: true, min: 1, per_page: 7 }
         @apps_to_update = @prompt.multi_select('Which apps do you wish to update?', options) do |prompt|
           all_indexes = (1..updateable.count).to_a
           prompt.default *(all_indexes)
@@ -85,6 +86,21 @@ module Shinka
         multi_bar = TTY::ProgressBar::Multi.new('Deploying updates… [:bar] :elapsed (ETA :eta) :percent', head: '>')
         @apps_to_update.each { |app| app.register_bar(multi_bar) }
         @apps_to_update.each(&:update)
+      end
+
+      def offer_cleanup
+        finish_timestamp = Time.now
+        update_count = @apps_to_update.count
+        return unless @prompt.yes?("#{update_count} update(s) were deployed. Do you want to run the cleanup procedure?")
+
+        wait_time = 120 - (Time.now - finish_timestamp).to_i
+
+        if wait_time > 0
+          bar = TTY::ProgressBar.new('Waiting for old containers to stop… [:bar] :eta', head: '>')
+          bar.iterate(wait_time.times) { sleep 1 }
+        end
+
+        Shinka::CLI.new.cleanup
       end
 
       def detect_deployed_versions

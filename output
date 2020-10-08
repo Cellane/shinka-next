@@ -1,0 +1,26 @@
+-----> Releasing grafana...
+-----> Deploying grafana...
+-----> No Procfile found in app image
+       DOKKU_SCALE declares scale -> web=1
+=====> Processing deployment checks
+       No CHECKS file found. Simple container checks will be performed.
+       For more efficient zero downtime deployments, create a CHECKS file. See http://dokku.viewdocs.io/dokku/deployment/zero-downtime-deploys/ for examples
+-----> Attempting pre-flight checks (web.1)
+       Waiting for 10 seconds ...
+       Default container check successful!
+-----> Running post-deploy
+-----> Associating app with network monitoring
+-----> Configuring grafana.milanvit.net...(using built-in template)
+-----> Creating https nginx.conf
+       Enabling HSTS
+       Reloading nginx
+-----> Renaming containers
+       Found previous container(s) (1c3bd6168c78) named grafana.web.1
+       Renaming container (1c3bd6168c78) grafana.web.1 to grafana.web.1.1602127015
+       Renaming container (7e2ea9e342af) dazzling_archimedes to grafana.web.1
+-----> Shutting down old containers in 60 seconds
+       1c3bd6168c78e36bc31a671c23312655e7b301c06e96af64a66cc9d7c09be0f0
+=====> Application deployed:
+       http://grafana.milanvit.net
+       https://grafana.milanvit.net
+

@@ -18,6 +18,18 @@ module Shinka
     end
     map %w(--version -v) => :version
 
+    desc 'cleanup', 'Command description...'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    def cleanup(*)
+      if options[:help]
+        invoke :help, ['cleanup']
+      else
+        require_relative 'commands/cleanup'
+        Shinka::Commands::Cleanup.new(options).execute
+      end
+    end
+
     desc 'update', 'Command description...'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'Display usage information'

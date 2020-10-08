@@ -67,6 +67,8 @@ module Shinka
             @bar.advance if line[/^[-=]{2,}/]
           end
         end
+
+        @bar.finish
       end
     end
   end
