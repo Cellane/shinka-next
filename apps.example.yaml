@@ -55,6 +55,16 @@
       :repository: davd/docker-ddns
       :filter: !ruby/regexp /^1[\.\d+]+$/
       :hub_filter: 1
+  :files:
+    :image:
+      :type: :token_preauth
+      :repository: seafileltd/seafile-pro-mc
+      :filter: !ruby/regexp /^7[\.\d+]+$/
+      :base_url: https://docker.seadrive.org
+      :token_endpoint: service/token
+      :token_service: harbor-registry
+      :username: username
+      :password: password
   :gitea:
     :image:
       :type: :docker_hub
