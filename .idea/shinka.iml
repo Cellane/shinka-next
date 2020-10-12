@@ -31,7 +31,6 @@
     <orderEntry type="library" scope="PROVIDED" name="tty-prompt (v0.22.0, rbenv: 2.7.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tty-reader (v0.8.0, rbenv: 2.7.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tty-screen (v0.8.1, rbenv: 2.7.1) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="tty-table (v0.12.0, rbenv: 2.7.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v1.7.0, rbenv: 2.7.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode_utils (v1.4.0, rbenv: 2.7.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="version_sorter (v2.2.4, rbenv: 2.7.1) [gem]" level="application" />

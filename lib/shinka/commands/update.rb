@@ -32,6 +32,13 @@ module Shinka
         initialize_progress_bars
         find_updates
         print_results
+        determine_updates
+
+        if @updateable.empty?
+          puts 'No updates were found at this time.'
+          return
+        end
+
         select_updates
         deploy_updates
         offer_cleanup
@@ -72,13 +79,16 @@ module Shinka
         puts table.render(:unicode, alignments: %i[left right left], padding: [0, 1])
       end
 
+      def determine_updates
+        @updateable = @apps.select(&:updates_available).map { |app| { app.name => app } }
+      end
+
       def select_updates
-        updateable = @apps.select(&:updates_available).map { |app| { app.name => app } }
         options = { cycle: true, filter: true, min: 1, per_page: 7 }
         @apps_to_update = @prompt.multi_select('Which apps do you wish to update?', options) do |prompt|
-          all_indexes = (1..updateable.count).to_a
+          all_indexes = (1..@updateable.count).to_a
           prompt.default *(all_indexes)
-          updateable.each { |name, app| prompt.choice name, app }
+          @updateable.each { |name, app| prompt.choice name, app }
         end
       end
 
@@ -95,12 +105,15 @@ module Shinka
 
         wait_time = 120 - (Time.now - finish_timestamp).to_i
 
-        if wait_time > 0
-          bar = TTY::ProgressBar.new('Waiting for old containers to stop… [:bar] :eta', head: '>')
-          bar.iterate(wait_time.times) { sleep 1 }
+        if wait_time.positive?
+          bar = TTY::ProgressBar.new('Waiting for old containers to stop… [:bar] :eta', head: '>', total: wait_time)
+          wait_time.times do
+            sleep 1
+            bar.advance
+          end
         end
 
-        Shinka::CLI.new.cleanup
+        Shinka::CLI.new.cleanup(params)
       end
 
       def detect_deployed_versions
