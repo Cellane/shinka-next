@@ -85,7 +85,12 @@ module Shinka
 
       def sort_removal_choices
         @removal_choices = @removal_choices.sort_by do |element|
-          repo, name_version = element.split '/'
+          if element.include? '/'
+            repo, name_version = element.split '/'
+          else
+            repo = nil
+            name_version = element
+          end
           name, version = name_version.split ':'
           [name, version, repo]
         end
@@ -102,7 +107,7 @@ module Shinka
       end
 
       def perform_removal
-        bar = TTY::ProgressBar.new('Removing orphans… [:bar] :percent', total: @removal_choices.count)
+        bar = TTY::ProgressBar.new('Removing orphans… [:bar] :percent', head: '>', total: @removal_choices.count)
         @removal_choices.each do |tag|
           `docker image rm #{tag}`
           bar.advance
