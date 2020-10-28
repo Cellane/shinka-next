@@ -95,7 +95,25 @@ module Shinka
       def deploy_updates
         multi_bar = TTY::ProgressBar::Multi.new('Deploying updates… [:bar] :elapsed (ETA :eta) :percent', head: '>')
         @apps_to_update.each { |app| app.register_bar(multi_bar) }
-        @apps_to_update.each(&:update)
+        thread_count = Etc.nprocessors / 2
+        task_groups = chunk @apps_to_update, thread_count
+        task_groups = task_groups.map { |group| Thread.new { group.each(&:update) } }
+        task_groups.each(&:join)
+      end
+
+      def chunk(tasks, thread_count)
+        division = tasks.size.div thread_count
+        modulo = tasks.size % thread_count
+        groups = []
+        start = 0
+
+        thread_count.times do |index|
+          length = division + (modulo > 0 && modulo > index ? 1 : 0)
+          groups << tasks.slice(start, length)
+          start += length
+        end
+
+        groups
       end
 
       def offer_cleanup

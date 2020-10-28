@@ -25,7 +25,7 @@ module Shinka
 
       def registry_url
         url = @@registry_base_url
-        url += @repository.split('/').count == 1 ? "library/#{@repository}" : @repository
+        url += registry.split('/').count == 1 ? "library/#{registry}" : registry
         url += '/tags?page_size=100'
         url += "&name=#{@hub_filter}" if @hub_filter
         url

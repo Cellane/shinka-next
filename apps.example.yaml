@@ -3,31 +3,31 @@
   :alertmanager:
     :image:
       :type: :docker_hub
-      :repository: prom/alertmanager
+      :registry: prom/alertmanager
       :filter: !ruby/regexp /^v0[\.\d+]+$/
       :hub_filter: v0
   :atlantis:
     :image:
       :type: :docker_hub
-      :repository: runatlantis/atlantis
+      :registry: runatlantis/atlantis
       :filter: !ruby/regexp /^v0[\.\d+]+$/
       :hub_filter: v0
   :bazarr:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/bazarr
+      :registry: linuxserver/bazarr
       :filter: !ruby/regexp /^v0[\.\d+]+-ls\d+/
       :hub_filter: v0
   :blog:
     :image:
       :type: :docker_hub
-      :repository: ghost
+      :registry: ghost
       :filter: !ruby/regexp /^3[\.\d+]+-alpine$/
       :hub_filter: 3
   :cadvisor:
     :image:
       :type: :gcr
-      :repository: google-containers/cadvisor
+      :registry: google-containers/cadvisor
       :filter: !ruby/regexp /^v0[\.\d+]+$/
       :username: _json_key
       :password: |-
@@ -40,25 +40,25 @@
   :drone:
     :image:
       :type: :docker_hub
-      :repository: drone/drone
+      :registry: drone/drone
       :filter: !ruby/regexp /^1[\.\d?]+$/
       :hub_filter: 1
   :drone-runner:
     :image:
       :type: :docker_hub
-      :repository: drone/drone-runner-docker
+      :registry: drone/drone-runner-docker
       :filter: !ruby/regexp /^1[\.\d+]+$/
       :hub_filter: 1
   :dyndns:
     :image:
       :type: :docker_hub
-      :repository: davd/docker-ddns
+      :registry: davd/docker-ddns
       :filter: !ruby/regexp /^1[\.\d+]+$/
       :hub_filter: 1
   :files:
     :image:
       :type: :token_preauth
-      :repository: seafileltd/seafile-pro-mc
+      :registry: seafileltd/seafile-pro-mc
       :filter: !ruby/regexp /^7[\.\d+]+$/
       :base_url: https://docker.seadrive.org
       :token_endpoint: service/token
@@ -68,98 +68,98 @@
   :gitea:
     :image:
       :type: :docker_hub
-      :repository: gitea/gitea
+      :registry: gitea/gitea
       :filter: !ruby/regexp /^1[\.\d+]+$/
       :hub_filter: 1
   :grafana:
     :image:
       :type: :docker_hub
-      :repository: grafana/grafana
+      :registry: grafana/grafana
       :filter: !ruby/regexp /^7[\.\d+]+?$/
       :hub_filter: 7
   :jackett:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/jackett
+      :registry: linuxserver/jackett
       :filter: !ruby/regexp /^v0[\.\d+]+-ls\d+$/
       :hub_filter: v0
   :lidarr:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/lidarr
+      :registry: linuxserver/lidarr
       :filter: !ruby/regexp /^0[\.\d+]+-ls\d+$/
       :hub_filter: 0
   :matomo:
     :image:
       :type: :docker_hub
-      :repository: matomo
+      :registry: matomo
       :filter: !ruby/regexp /^[\.?\d+]+$/
   :netdata:
     :image:
       :type: :docker_hub
-      :repository: netdata/netdata
+      :registry: netdata/netdata
       :filter: !ruby/regexp /^v[\.?+\d+]+$/
       :hub_filter: v
   :node-exporter:
     :image:
       :type: :docker_hub
-      :repository: prom/node-exporter
+      :registry: prom/node-exporter
       :filter: !ruby/regexp /^v1[\.\d+]+$/
       :hub_filter: v1
   :node-exporter-smartmon:
     :image:
       :type: :docker_hub
-      :repository: galexrt/node-exporter-smartmon
+      :registry: galexrt/node-exporter-smartmon
       :filter: !ruby/regexp /^v\d{8}-\d{6}-\d{3}$/
       :hub_filter: v
   office:
     :image:
       :type: :docker_hub
-      :repository: onlyoffice/documentserver
+      :registry: onlyoffice/documentserver
       :filter: !ruby/regexp /^[\.?\d+]+$/
   ombi:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/ombi
+      :registry: linuxserver/ombi
       :filter: !ruby/regexp /^v3[\.\d+]+-ls\d+$/
       :hub_filter: v3
   plex:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/plex
+      :registry: linuxserver/plex
       :filter: !ruby/regexp /^1[\.\d+]+-[0-9a-f]{9}-ls\d+$/
       :hub_filter: 1
   portainer:
     :image:
       :type: :docker_hub
-      :repository: portainer/portainer-ce
+      :registry: portainer/portainer-ce
       :filter: !ruby/regexp /^[\.?\d+]+$/
   prometheus:
     :image:
       :type: :docker_hub
-      :repository: prom/prometheus
+      :registry: prom/prometheus
       :filter: !ruby/regexp /^v2[\.\d+]+$/
       :hub_filter: v2
   radarr:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/radarr
+      :registry: linuxserver/radarr
       :filter: !ruby/regexp /^3[\.\d+]+-ls\d+$/
       :hub_filter: 3
   sonarr:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/sonarr
+      :registry: linuxserver/sonarr
       :filter: !ruby/regexp /^3[\.\d+]+-ls\d+$/
       :hub_filter: 3
   tautulli:
     :image:
       :type: :docker_hub
-      :repository: linuxserver/tautulli
+      :registry: linuxserver/tautulli
       :filter: !ruby/regexp /^v2[\.\d+]+-ls\d+$/
       :hub_filter: v2
   transmission:
     :image:
       :type: :docker_hub
-      :repository: haugene/transmission-openvpn
+      :registry: haugene/transmission-openvpn
       :filter: !ruby/regexp /^[\.?\d+]+-alpine$/

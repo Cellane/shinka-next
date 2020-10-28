@@ -32,11 +32,11 @@ module Shinka
       end
 
       def token_url
-        "#{@base_url}/#{@token_endpoint}?service=#{@token_service}&scope=repository:#{@repository}"
+        "#{@base_url}/#{@token_endpoint}?service=#{@token_service}&scope=repository:#{registry_bare_name}"
       end
 
       def registry_url
-        "#{@base_url}/v2/#{@repository}/tags/list"
+        "#{@base_url}/v2/#{registry_bare_name}/tags/list"
       end
     end
   end

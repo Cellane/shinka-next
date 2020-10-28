@@ -19,7 +19,7 @@ module Shinka
       def find_latest_version
         opts = {}
         opts[:http_basic_authentication] = [@username, @password] if @username && @password
-        registry_url = "#{@@registry_base_url}#{@repository}/tags/list"
+        registry_url = "#{@@registry_base_url}#{registry_bare_name}/tags/list"
         response = URI.open(registry_url, opts).read
         response = JSON.parse(response, symbolize_names: true)
         matching_versions = response[:tags].select { |tag| tag =~ @filter }
