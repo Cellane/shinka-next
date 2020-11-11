@@ -86,7 +86,7 @@ module Shinka
       def sort_removal_choices
         @removal_choices = @removal_choices.sort_by do |element|
           if element.include? '/'
-            repo, name_version = element.split '/'
+            repo, _, name_version = element.rpartition '/'
           else
             repo = nil
             name_version = element
