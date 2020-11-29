@@ -41,7 +41,7 @@ module Shinka
 
         select_updates
         deploy_updates
-        offer_cleanup
+        display_update_summary
       end
 
       private
@@ -116,10 +116,16 @@ module Shinka
         groups
       end
 
-      def offer_cleanup
+      def display_update_summary
+        success_count, failure_count = @apps_to_update.partition(&:last_update_status).map(&:count)
+        failure_names = @apps_to_update.select { |app| app.last_update_status == false }.map(&:name).join ', '
+        puts "#{failure_count} app(s) failed to update: #{failure_names}" if failure_count > 0
+        offer_cleanup(success_count) if success_count > 0
+      end
+
+      def offer_cleanup(success_count)
         finish_timestamp = Time.now
-        update_count = @apps_to_update.count
-        return unless @prompt.yes?("#{update_count} update(s) were deployed. Do you want to run the cleanup procedure?")
+        return unless @prompt.yes?("#{success_count} update(s) were deployed. Do you want to run the cleanup procedure?")
 
         wait_time = 120 - (Time.now - finish_timestamp).to_i
 

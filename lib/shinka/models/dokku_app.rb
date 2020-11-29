@@ -11,6 +11,7 @@ module Shinka
       attr_reader :name
       attr_reader :deployed_version
       attr_reader :latest_version
+      attr_reader :last_update_status
 
       def initialize(name, record)
         image_type = Models.const_get(record[:image][:type].to_s.split('_').collect(&:capitalize).join)
@@ -41,35 +42,37 @@ module Shinka
       end
 
       def register_bar(multi_bar)
-        text = "Updating #{name}…".ljust(25, ' ')
+        text = "Updating #{name}…".ljust(40, ' ')
         @bar = multi_bar.register("#{text} [:bar] :elapsed :percent", total: 14, width: 20)
         @bar.current = 0
       end
 
       def update
-        pull_latest_image
-        deploy_latest_image
+        @last_update_status = pull_latest_image && deploy_latest_image
       end
 
       private
 
       def pull_latest_image
-        `docker image pull #{@image.registry}:#{@latest_version}`
-        @bar.advance
-        `docker image tag #{@image.registry}:#{@latest_version} dokku/#{@name}:#{@latest_version_dokku_format}`
-        @bar.advance
+        system("docker image pull #{@image.registry}:#{@latest_version}", out: File::NULL, err: File::NULL) &&
+          @bar.advance &&
+          system("docker image tag #{@image.registry}:#{@latest_version} dokku/#{@name}:#{@latest_version_dokku_format}") &&
+          @bar.advance
       end
 
       def deploy_latest_image
         cmd = ['dokku', 'tags:deploy', @name.to_s, @latest_version_dokku_format]
+        return_value = nil
 
-        Open3.popen3(*cmd) do |_stdin, stdout, _stderr, _status, _thread|
+        Open3.popen3(*cmd) do |_stdin, stdout, _stderr, thread|
           while (line = stdout.gets)
             @bar.advance if line[/^[-=]{2,}/]
           end
+          return_value = thread.value
         end
 
         @bar.finish
+        return_value.success?
       end
     end
   end
