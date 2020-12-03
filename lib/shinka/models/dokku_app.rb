@@ -13,6 +13,8 @@ module Shinka
       attr_reader :latest_version
       attr_reader :last_update_status
 
+      IGNORED_LAYERS = ['LABEL com.dokku', 'LABEL dokku', 'LABEL org.label-schema.schema-version', 'LABEL org.label-schema.vendor=dokku']
+
       def initialize(name, record)
         image_type = Models.const_get(record[:image][:type].to_s.split('_').collect(&:capitalize).join)
         @name = name
@@ -23,7 +25,7 @@ module Shinka
         current_dokku_image_id = `dokku tags #{@name} | grep dokku | grep latest | awk '{ print $3 }'`.strip
         image_history = `docker image history #{current_dokku_image_id} --format "{{json .}}" --no-trunc`
         current_image_id = image_history.split("\n").map { |line| JSON.parse line, symbolize_names: true }
-                                        .reject { |line| line[:CreatedBy].include? 'LABEL com.dokku' }
+                                        .reject { |line| IGNORED_LAYERS.any? { |ignored| line[:CreatedBy].include? ignored } }
                                         .first[:ID]
 
         @deployed_version = JSON.parse(`docker image inspect #{current_image_id}`, symbolize_names: true)
