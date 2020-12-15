@@ -6,7 +6,6 @@ require 'tty-progressbar'
 require 'tty-prompt'
 require 'yaml'
 require_relative '../command'
-require_relative '../models/dokku_app'
 
 module Shinka
   module Commands
@@ -43,7 +42,7 @@ module Shinka
       private
 
       def setup_multi_bar
-        multi_bar = TTY::ProgressBar::Multi.new('Collecting required information… [:bar] :elapsed', head: '>')
+        multi_bar = TTY::ProgressBar::Multi.new('Collecting required information… [:bar] :eta', head: '>')
         container_count = parse_json_output(`docker container ls -a --format "{{json .}}" --no-trunc`).count
         @bars = {
           remove_containers: multi_bar.register('Removing stopped containers… [:bar]', total: 2, width: 20),
@@ -68,7 +67,7 @@ module Shinka
         @used_image_ids = containers.map do |container|
           container_details = parse_json_output(`docker container inspect #{container[:ID]} --format "{{json .}}"`)
           @bars[:determine_used].advance
-          [container_details[:Image], detect_root_image(container_details[:Image])]
+          [container_details[:Image]] + detect_root_images(container_details[:Image])
         end.flatten.uniq.sort
       end
 
@@ -115,9 +114,9 @@ module Shinka
         end
       end
 
-      def detect_root_image(image_id)
+      def detect_root_images(image_id)
         history = parse_json_output `docker image history #{image_id} --format "{{json .}}" --no-trunc`
-        history.reject { |line| Models::DokkuApp::IGNORED_LAYERS.any? { |ignored| line[:CreatedBy].include? ignored } }.first[:ID]
+        history.reject { |line| line[:ID] == '<missing>' }.map { |line| line[:ID] }
       end
 
       def parse_json_output(output)
