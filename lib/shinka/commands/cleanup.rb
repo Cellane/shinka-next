@@ -6,6 +6,7 @@ require 'tty-progressbar'
 require 'tty-prompt'
 require 'yaml'
 require_relative '../command'
+require_relative '../models/dokku_app'
 
 module Shinka
   module Commands
@@ -92,7 +93,7 @@ module Shinka
             name_version = element
           end
           name, version = name_version.split ':'
-          [name, version, repo]
+          [name, version, repo].compact
         end
       end
 
@@ -116,7 +117,7 @@ module Shinka
 
       def detect_root_image(image_id)
         history = parse_json_output `docker image history #{image_id} --format "{{json .}}" --no-trunc`
-        history.reject { |layer| layer[:CreatedBy].include?('com.dokku') }.first[:ID]
+        history.reject { |line| Models::DokkuApp::IGNORED_LAYERS.any? { |ignored| line[:CreatedBy].include? ignored } }.first[:ID]
       end
 
       def parse_json_output(output)

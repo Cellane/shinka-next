@@ -29,7 +29,8 @@ module Shinka
                                         .first[:ID]
 
         @deployed_version = JSON.parse(`docker image inspect #{current_image_id}`, symbolize_names: true)
-                                .first[:RepoTags].first.split(':').last
+                                .first[:RepoTags].reject { |tag| tag.start_with? 'dokku/' }
+                                .first.split(':').last
       end
 
       def find_latest_version
