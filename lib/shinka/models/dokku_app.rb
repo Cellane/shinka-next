@@ -27,15 +27,20 @@ module Shinka
         current_image_id = image_history.split("\n").map { |line| JSON.parse line, symbolize_names: true }
                                         .reject { |line| IGNORED_LAYERS.any? { |ignored| line[:CreatedBy].include? ignored } }
                                         .first[:ID]
+        image_details = JSON.parse(`docker image inspect #{current_image_id}`, symbolize_names: true).first
+        original_tags = if image_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags")
+                          JSON.parse(image_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags"))
+                        else
+                          image_details[:RepoTags]
+                        end
 
-        @deployed_version = JSON.parse(`docker image inspect #{current_image_id}`, symbolize_names: true)
-                                .first[:RepoTags].reject { |tag| tag.start_with? 'dokku/' }
-                                .first.split(':').last
+        @deployed_version = original_tags.reject { |tag| tag.start_with? 'dokku/' }
+                                         .first&.split(':')&.last
       end
 
       def find_latest_version
         @latest_version = @image.find_latest_version
-        @latest_version_dokku_format = @latest_version[/^v?([\\.?\d+]+)/, 1] if @latest_version
+        @latest_version_dokku_format = @latest_version[/^v?(?:amd64-)?(?:develop-)?(?:nightly-)?(?:preview-)?(?:version-)?([\\.?\d+]+)/, 1] if @latest_version
       end
 
       def updates_available
@@ -46,25 +51,18 @@ module Shinka
 
       def register_bar(multi_bar)
         text = "Updating #{name}…".ljust(40, ' ')
-        @bar = multi_bar.register("#{text} [:bar] :elapsed :percent", total: 14, width: 20)
+        @bar = multi_bar.register("#{text} [:bar] :elapsed :percent", total: 22)
         @bar.current = 0
       end
 
       def update
-        @last_update_status = pull_latest_image && deploy_latest_image
+        @last_update_status = deploy_latest_image
       end
 
       private
 
-      def pull_latest_image
-        system("docker image pull #{@image.registry}:#{@latest_version}", out: File::NULL, err: File::NULL) &&
-          @bar.advance &&
-          system("docker image tag #{@image.registry}:#{@latest_version} dokku/#{@name}:#{@latest_version_dokku_format}") &&
-          @bar.advance
-      end
-
       def deploy_latest_image
-        cmd = ['dokku', 'tags:deploy', @name.to_s, @latest_version_dokku_format]
+        cmd = ['dokku', 'git:from-image', @name.to_s, "#{@image.registry}:#{@latest_version}"]
         return_value = nil
 
         Open3.popen3(*cmd) do |_stdin, stdout, _stderr, thread|

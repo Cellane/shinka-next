@@ -67,7 +67,7 @@ module Shinka
         @used_image_ids = containers.map do |container|
           container_details = parse_json_output(`docker container inspect #{container[:ID]} --format "{{json .}}"`)
           @bars[:determine_used].advance
-          [container_details[:Image]] + detect_root_images(container_details[:Image])
+          [container_details[:Image]] + detect_root_images(container_details[:Image]) + detect_original_tags(container_details)
         end.flatten.uniq.sort
       end
 
@@ -117,6 +117,14 @@ module Shinka
       def detect_root_images(image_id)
         history = parse_json_output `docker image history #{image_id} --format "{{json .}}" --no-trunc`
         history.reject { |line| line[:ID] == '<missing>' }.map { |line| line[:ID] }
+      end
+
+      def detect_original_tags(container_details)
+        return [] unless container_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags")
+
+        JSON.parse(container_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags"))
+            .reject { |tag| tag.start_with? 'dokku/' }
+            .map(&method(:detect_root_images))
       end
 
       def parse_json_output(output)
