@@ -22,18 +22,9 @@ module Shinka
       end
 
       def detect_deployed_version
-        current_dokku_image_id = `dokku tags #{@name} | grep dokku | grep latest | awk '{ print $3 }'`.strip
-        image_history = `docker image history #{current_dokku_image_id} --format "{{json .}}" --no-trunc`
-        current_image_id = image_history.split("\n").map { |line| JSON.parse line, symbolize_names: true }
-                                        .reject { |line| IGNORED_LAYERS.any? { |ignored| line[:CreatedBy].include? ignored } }
-                                        .first[:ID]
-        image_details = JSON.parse(`docker image inspect #{current_image_id}`, symbolize_names: true).first
-        original_tags = if image_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags")
-                          JSON.parse(image_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags"))
-                        else
-                          image_details[:RepoTags]
-                        end
-
+        current_dokku_image_id = `docker image ls | grep "dokku/#{@name} " | grep latest | awk '{ print $3 }'`.strip
+        image_details = JSON.parse(`docker image inspect #{current_dokku_image_id}`, symbolize_names: true).first
+        original_tags = JSON.parse(image_details.dig(:Config, :Labels, :"com.dokku.docker-image-labeler/alternate-tags"))
         @deployed_version = original_tags.reject { |tag| tag.start_with? 'dokku/' }
                                          .first&.split(':')&.last
       end
